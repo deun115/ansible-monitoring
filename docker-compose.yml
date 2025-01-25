@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  ansible-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ansible-test
+    privileged: true
+    command: /sbin/init
+    ports:
+      - "2222:22"     # ssh to connect ansible
+      - "3000:3000"   # grafana
+      - "9090:9090"   # prometheus
+      - "9100:9100"   # node-exporter
+      - "5433:5432"   # postgresql
+      - "9187:9187"   # postgresql-exporter 
+      - "9093:9093"   # alertmanager
+    environment:
+      - container=docker
+    stdin_open: true
+    tty: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - /Users/yang-eunseo/Desktop/ansible-project:/ansible-project

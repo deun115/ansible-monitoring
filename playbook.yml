@@ -1,0 +1,63 @@
+---
+- hosts: alertmanager
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - prometheus.prometheus.alertmanager
+  vars:
+    alertmanager_version: latest
+    alertmanager_receivers:
+      - name: email
+        email_configs:
+          - to: "receiver@example.com"        # 수신자 이메일 주소
+            from: "sender@example.com"        # 발신자 이메일 주소
+            smarthost: "smtp.example.com:587" # SMTP 서버 및 포트
+            auth_username: "emailId"          # SMTP 인증 사용자 이름
+            auth_password: "password"         # SMTP 인증 비밀번호
+            headers:
+              subject: "[Alertmanager] New Alert" # 이메일 제목
+    alertmanager_route:
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 3h
+      receiver: email
+
+- hosts: node_exporter
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - prometheus.prometheus.node_exporter
+
+- hosts: prometheus
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - prometheus.prometheus.prometheus
+  vars:
+    prometheus_targets:
+      node:
+      - targets:
+        - localhost:9100  # prometheus
+        - localhost:9093  # alertmanager
+        - localhost:9090  # node-exporter
+        - localhost:9187  # postgres-exporter
+        labels:
+          env: demosite
+
+- hosts: grafana
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - grafana.grafana.grafana
+
+- hosts: postgresql
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - prometheus.prometheus.postgres_exporter
