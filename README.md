@@ -29,3 +29,7 @@ localhost ansible_host=127.0.0.1 ansible_port=22 ansible_user=root ansible_passw
 
 4) `ansible-playbook -i inventory.ini playbook.yml`
 - ansible 실행
+- 만약 sudo 명령어로 실행시킬 때 비밀번호를 입력받아야 한다면 `--ask-become-pass` 옵션 추가하기
+
+5) `ansible-playbook playbook.yaml --syntax-check`
+- ansible 실행 전 문법 체크
