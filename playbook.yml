@@ -61,3 +61,16 @@
   become_method: sudo
   roles:
     - prometheus.prometheus.postgres_exporter
+
+- name: cAdvisor to Scrape Container Metrics
+  hosts: cadvisor
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars:
+    cadvisor_port: 9280
+    cadvisor_version: v0.28.3
+    cadvisor_checksum: daf4543dc1bc39e8234060376bf4946609b0f6108bdecbdf5ffd239e67664eb3
+
+  roles:
+    - ansible-role-cadvisor
