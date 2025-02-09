@@ -15,6 +15,7 @@ services:
       - "5433:5432"   # postgresql
       - "9187:9187"   # postgresql-exporter 
       - "9093:9093"   # alertmanager
+      - "9280:9280"   # cAdvisor
     environment:
       - container=docker
     stdin_open: true
